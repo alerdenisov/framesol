@@ -1,14 +1,13 @@
 pragma solidity ^0.4.15;
 
-import 'zeppelin-solidity/contracts/token/MintableToken.sol';
-import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
+import '../token/interfaces/MintableTokenInterface.sol';
 import './interfaces/ShipmentInterface.sol';
 
-contract MintingShipment is Ownable, ShipmentInterface {
-  MintableToken public token;
+contract MintingShipment is ShipmentInterface {
+  MintableTokenInterface public token;
 
   function MintingShipment(address _tokenAddress) {
-    token = MintableToken(_tokenAddress);    
+    token = MintableTokenInterface(_tokenAddress);    
   }
 
   function ship(address _for, uint _amount) onlyOwner public returns (bool) {
