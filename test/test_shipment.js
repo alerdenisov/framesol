@@ -40,4 +40,35 @@ contract('Shipment Interface', accounts => {
       assert(balance.eq(amount), `balance isnt correct ${balance.toString(10)}`)
     })
   })
+
+  describe('Minting shipment contract', async() => {
+    beforeEach(async() => {
+      shipment = await MintingShipment.new(token.address, ownerSig)
+      await token.addRights(shipment.address)
+    })
+
+    it('could ship 10 tokens', async() => { assert(await shipment.canShip(accounts[1], web3.toWei(10, 'ether'))) })
+    it('should ship 10 tokens', async() => { await assertShipment(shipment, accounts[1], web3.toWei(10, 'ether')) })
+    it('shouldnt ship from non owner', async() => { expectThrow(shipment.ship(accounts[1], web3.toWei(10, 'ether'), { from: accounts[1] })) })
+
+
+    it('should increase balance 10 tokens', async() => { 
+      const amount = web3.toWei(10, 'ether')
+      await shipment.ship(accounts[1], amount, ownerSig)
+      const balance = await token.balanceOf(accounts[1])
+      assert(balance.eq(amount), `balance isnt correct ${balance.toString(10)}`)
+    })
+
+    it('should return rights', async() => {
+      let owner
+      owner = await token.owner()
+      assert(owner == shipment.address)
+
+      await shipment.returnOwnership(ownerSig)
+
+      owner = await token.owner()
+      assert(owner == accounts[0])
+
+    })
+  })
 })

@@ -19,4 +19,9 @@ contract MintingShipment is ShipmentInterface, SingleOwner {
   function canShip(address _for, uint _amount) public constant returns (bool) {
     return token.hasRights(address(this)) && !token.mintingFinished();
   }
+
+  function returnOwnership() senderWithRights public returns (bool) {
+    token.addRights(owner);
+    return true;
+  }
 }
