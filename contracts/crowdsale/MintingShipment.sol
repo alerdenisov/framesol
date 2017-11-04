@@ -1,16 +1,17 @@
 pragma solidity ^0.4.15;
 
+import '../core/SingleOwner.sol';
 import '../token/interfaces/MintableTokenInterface.sol';
 import './interfaces/ShipmentInterface.sol';
 
-contract MintingShipment is ShipmentInterface {
+contract MintingShipment is ShipmentInterface, SingleOwner {
   MintableTokenInterface public token;
 
-  function MintingShipment(address _tokenAddress) {
+  function MintingShipment(address _tokenAddress) public {
     token = MintableTokenInterface(_tokenAddress);    
   }
 
-  function ship(address _for, uint _amount) public returns (bool) {
+  function ship(address _for, uint _amount) senderWithRights public returns (bool) {
     require(token.mint(_for, _amount));
     return true;
   }

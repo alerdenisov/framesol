@@ -12,9 +12,7 @@ contract('Shipment Interface', accounts => {
   let index = 0
 
   beforeEach(async() => {
-    console.log('create token')
     token = await SampleToken.new(index++, ownerSig)
-    console.log(await token.balanceOf(accounts[0]))
   })
 
   async function assertShipment(shipment, investor, amount, signature) {
@@ -25,26 +23,18 @@ contract('Shipment Interface', accounts => {
     assert(await shipment.ship(investor, amount, signature))
   }
 
-  describe('transfer shipment', async() => {
+  describe('Transfer shipment contract', async() => {
     beforeEach(async() => {
-      console.log('create shipment')
-      shipment = await new TransferShipment(accounts[0], token.address, ownerSig)
-      console.log(shipment.address)
-      console.log(await shipment.canShip(accounts[1], web3.toWei(10, 'ether')))
+      shipment = await TransferShipment.new(accounts[0], token.address, ownerSig)
       await token.approve(shipment.address, web3.toWei(100, 'ether'), ownerSig)
-      console.log(await shipment.canShip(accounts[1], web3.toWei(10, 'ether')))
-      // console.log(await token.allowance(accounts[0], shipment.address))
-      let shipToken = await shipment.tokenAddress()
-      console.log(shipToken)
-      // console.log(TokenInterface.at(shipToken))
-      // console.log(await shipToken.allowance(accounts[0], shipment.address))
     })
 
+    it('could ship 10 tokens', async() => { assert(await shipment.canShip(accounts[1], web3.toWei(10, 'ether'))) })
     it('should ship 10 tokens', async() => { await assertShipment(shipment, accounts[1], web3.toWei(10, 'ether')) })
     it('shouldnt ship from non owner', async() => { expectThrow(shipment.ship(accounts[1], web3.toWei(10, 'ether'), { from: accounts[1] })) })
 
-    it('should increase balance 1000 tokens', async() => { 
-      const amount = web3.toWei(1000, 'ether')
+    it('should increase balance 10 tokens', async() => { 
+      const amount = web3.toWei(10, 'ether')
       await shipment.ship(accounts[1], amount, ownerSig)
       const balance = await token.balanceOf(accounts[1])
       assert(balance.eq(amount), `balance isnt correct ${balance.toString(10)}`)

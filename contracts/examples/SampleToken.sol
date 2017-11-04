@@ -3,7 +3,7 @@ pragma solidity ^0.4.15;
 import '../token/StandardToken.sol';
 
 contract SampleToken is StandardToken {
-  function SimpleToken() { //StandardToken("Sample Token", "EST", 18)
+  function SampleToken() public {
     sName = "Sample Token";
     sTicker = "EST";
     uDecimals = 18;
