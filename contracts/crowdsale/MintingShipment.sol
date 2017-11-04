@@ -10,12 +10,12 @@ contract MintingShipment is ShipmentInterface {
     token = MintableTokenInterface(_tokenAddress);    
   }
 
-  function ship(address _for, uint _amount) onlyOwner public returns (bool) {
+  function ship(address _for, uint _amount) public returns (bool) {
     require(token.mint(_for, _amount));
     return true;
   }
 
   function canShip(address _for, uint _amount) public constant returns (bool) {
-    return token.owner() == address(this) && !token.mintingFinished();
+    return token.hasRights(address(this)) && !token.mintingFinished();
   }
 }

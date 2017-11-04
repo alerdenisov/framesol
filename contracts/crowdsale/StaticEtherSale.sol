@@ -5,20 +5,18 @@ import '../token/interfaces/MintableTokenInterface.sol';
 import './interfaces/SaleInterface.sol';
 import './StaticPricing.sol';
 import './MintingShipment.sol';
-import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
-import 'zeppelin-solidity/contracts/lifecycle/Pausable.sol';
 
-contract StaticEtherSale is SaleInterface, Ownable, Pausable {
-  MintableTokenInterface token;
+contract StaticEtherSale is SaleInterface {
+  MintableTokenInterface token; 
 
   function StaticEtherSale(uint _weiPrice, address _tokenAddress) public {
     token = MintableTokenInterface(_tokenAddress);
-    require(token.owner() == address(this));
+    require(token.hasRights(address(this)));
 
     pricing = new StaticPricing(_weiPrice, token.decimals());
     shipment = new MintingShipment(_tokenAddress);
 
-    token.transferOwnership(address(shipment));
+    token.addRights(address(shipment));
   }
 
   function canBuy(address _investor, uint _value) public constant returns (bool) {

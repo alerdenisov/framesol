@@ -1,20 +1,14 @@
 pragma solidity ^0.4.15;
 
-import '../token/interfaces/MintableTokenInterface.sol';
-import 'zeppelin-solidity/contracts/token/MintableToken.sol';
+import '../token/StandardToken.sol';
 
-contract SampleToken is MintableTokenInterface, MintableToken {
-  string public constant name = "SimpleToken";
-  string public constant symbol = "SIM";
-  uint8 public constant decimals = 18;
-
-  // 1,000,000,000 tokens
-  uint256 public constant INITIAL_SUPPLY = 1 * (10 ** 9) * (10 ** uint256(decimals));
-
-  /**
-   * @dev Constructor that gives msg.sender all of existing tokens.
-   */
-  function SimpleToken() {
-    mint(msg.sender, INITIAL_SUPPLY);
+contract SampleToken is StandardToken {
+  function SimpleToken() { //StandardToken("Sample Token", "EST", 18)
+    sName = "Sample Token";
+    sTicker = "EST";
+    uDecimals = 18;
+    // 1,000,000,000 tokens
+    uint256 INITIAL_SUPPLY = 1 * (10 ** 9) * (10 ** decimals());
+    require(mint(msg.sender, INITIAL_SUPPLY));
   }
 }

@@ -24,7 +24,5 @@
     "url": "https://github.com/alerdenisov/framesol/issues"
   },
   "homepage": "https://github.com/alerdenisov/framesol#readme",
-  "dependencies": {
-    "zeppelin-solidity": "^1.3.0"
-  }
+  "dependencies": {}
 }
