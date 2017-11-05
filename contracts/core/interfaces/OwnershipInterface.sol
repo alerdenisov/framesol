@@ -13,6 +13,7 @@ contract OwnershipInterface {
 
   function hasRights(address _who) public constant returns(bool);
   function addRights(address _for) senderWithRights public returns(bool);
+  function removeRights(address _for) senderWithRights public returns(bool);
 
-  event SetRights(address indexed who);
+  event SetRights(address indexed who, bool indexed allow);
 }

@@ -3,39 +3,36 @@ pragma solidity ^0.4.15;
 import './interfaces/OwnershipRecipientInterface.sol';
 import './interfaces/OwnershipInterface.sol';
 
-contract SingleOwner is OwnershipInterface {
-  address public owner;
+contract Multionwer is OwnershipInterface {
+  mapping (address => bool) public owners;
 
   function SingleOwner() public {
-    owner = msg.sender;
-    SetRights(owner, true);
+    owners[msg.sender];
   }
 
   function hasRights(address _who) public constant returns(bool) {
-    return owner == _who;
+    return owners[_who];
   }  
 
   function addRights(address _for) public returns(bool) {
     require(_for != 0x0);
+    owners[_for] = true;
 
-    if(owner != 0x0) {
-      SetRights(owner, false);
-    }
-
-    owner = _for;
-    
     OwnershipRecipientInterface receiver = OwnershipRecipientInterface(_for);
     if (address(receiver) != 0x0) {
       receiver.receiveOwnership(address(this), msg.sender);
     }
 
-    SetRights(owner, true);
+    SetRights(_for, true);
 
     return true;
   }
 
   function removeRights(address _for) public returns(bool) {
-    require(false);
-    return false;
+    require(_for != msg.sender);
+    owners[_for] = false;
+
+    SetRights(_for, false);
+    return true;
   }
 }

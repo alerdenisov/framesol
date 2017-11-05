@@ -1,10 +1,11 @@
 pragma solidity ^0.4.15;
 
+import '../core/interfaces/OwnershipRecipientInterface.sol';
 import '../core/SingleOwner.sol';
 import '../token/interfaces/TokenInterface.sol';
 import './interfaces/ShipmentInterface.sol';
 
-contract TransferShipment is ShipmentInterface, SingleOwner {
+contract TransferShipment is ShipmentInterface, SingleOwner, OwnershipRecipientInterface {
   TokenInterface internal token;
   address public tokenAddress;
   address public supplyAddress;
@@ -26,5 +27,9 @@ contract TransferShipment is ShipmentInterface, SingleOwner {
 
   function canShip(address _for, uint _amount) public constant returns (bool) {
     return _for != 0x0 && token.allowance(supplyAddress, address(this)) >= _amount;
+  }
+
+  function receiveOwnership(address _what, address _from) public returns(bool) {
+    return super.receiveOwnership(_what, _from);
   }
 }
